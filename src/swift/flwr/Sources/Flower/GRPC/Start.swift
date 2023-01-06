@@ -68,11 +68,17 @@ public func startClient(serverHost: String, serverPort: Int, client: Client) {
     
     while true {
         if let msg = serverMessage {
-            let receive = try! handle(client: client, serverMsg: msg)
-            let result = bidirectional.sendMessage(receive.0)
-            sleepDuration = receive.1
-            if !receive.2 {
-                break
+            do {
+                let receive = try handle(client: client, serverMsg: msg)
+                let result = bidirectional.sendMessage(receive.0)
+                sleepDuration = receive.1
+                if !receive.2 {
+                    break
+                }
+            } catch let error {
+                print("Error server message caught:  \(msg)")
+                print(msg.debugDescription)
+                print(error.localizedDescription)
             }
             serverMessage = nil
         }
